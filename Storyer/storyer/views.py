@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 # Create your views here.
 from django.http import HttpResponse
 
-from storyer.models import Student, Assignment
+from storyer.models import Student, Assignment, Faculty
 from django.contrib.auth.models import User
 from .forms import LoginForm, SignupForm
 

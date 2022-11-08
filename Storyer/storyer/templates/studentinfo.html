@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE = edge">
+  <meta name="viewport" content="width=device-width initial-scale=1.0">
+  <title>
+    Assignment creation
+  </title>
+ 
+  {% load static %}
+  <link rel='stylesheet' href='../../static/css/styles.css'/>
+</head>
+
+
+<body class="solid-bg">
+  <div class="header-bar">
+    <img class="storyer-logo" src="../../static/media/images/logo.png" alt="Storyer logo" />
+  </div>
+  <div class="home-button">
+    <img class="icon-home" src="../../static/media/images/home.png" alt="home icon" />
+  </div>
+  <div class="page-text-dark">
+    <h1>{% student_name %}'s Info</h1>
+  </div>
+
+  <div class="group-name">
+    <h2>{% group_name %}</h2>
+  </div>
+  <div class="group-list-student-priority">
+    <h3>Student's past preferences:</h3>
+    <!-- input info on ranked priority choice here, likely use <table>? -->
+  </div>
+
+</body>
+</html>
