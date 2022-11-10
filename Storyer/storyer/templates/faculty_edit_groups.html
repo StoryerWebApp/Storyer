@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE = edge">
+  <meta name="viewport" content="width=device-width initial-scale=1.0">
+  <title>
+    Group Edit - Faculty 
+  </title>
+ 
+  {% load static %}
+  <link rel='stylesheet' href='../../static/css/styles.css'/>
+  <link rel='stylesheet' href='../../static/css/pagestyles.css'/>
+</head>
+
+<body class="solid-bg">
+  <div class="header-bar">
+    <img class="storyer-logo" src="../../static/media/images/logo.png" alt="Storyer logo" />
+  </div>
+  <div class="home-button">
+    <img class="icon-home" src="../../static/media/images/home.png" alt="home icon" />
+  </div>
+
+  <div class="faculty-side-nav">
+    <button type="submit" class="button">
+      <a href="{% url 'storyer:faculty_landing' %}">GO BACK</a>
+    </button>
+  </div>
+</body>

@@ -8,16 +8,20 @@ signon.html
 Pages Facility 
 
 Create.html: create groups 
+^ has become faculty_create_group.html
 
 Establish.html: posting groups 
+^ has become faculty_edit_group.html
 
 Postestablish.html: page saying you made the groups 
 
 Fland.html: facility lander 
+^ has become faculty_landing.html
 
 Studentinfo.html: student groups selecting rankings 
 
 Assign.html: creates an assignment 
+^ has become faculty_create_assignment.html
 
 postcreate.html: page saying you posted an assignment 
 
@@ -25,6 +29,11 @@ check.html: lets you select which group you want to go to
 
 Fsubmit.html: page that has the groups submissions 
 
+NEW
+
+faculty_create_course.html : allows new course to be created
+
+faculty_change_course.html : lets faculty view a different course and its groups
 
 
 Pages Student 

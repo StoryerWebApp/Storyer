@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 # Create your views here.
 from django.http import HttpResponse
 
-from storyer.models import Student, Assignment, Faculty
+from storyer.models import Student, Assignment, Faculty, Course, Group
 from django.contrib.auth.models import User
 from .forms import LoginForm, SignupForm
 
@@ -48,7 +48,7 @@ def signup_faculty(request):
                     new_faculty = Faculty(
                         name=name, email=signup_form['email'], password=signup_form['password'])
                     new_faculty.save()
-                    return faculty_detail(request, new_faculty.id)
+                    return faculty_landing(request, new_faculty.id)
                 else:
                     context.update({"exists": True})
         context.update({'error_message': True})
@@ -87,11 +87,11 @@ def login_faculty(request):
                 faculty = Faculty.objects.filter(
                     email=login_form['email'], password=login_form['password']).first()
                 if faculty is not None:
-                    return faculty_detail(request, faculty.id)
+                    return faculty_landing(request, faculty.id)
         context = {'error_message': True}
-        return render(request, 'login-faculty.html', context)
+        return render(request, 'login_faculty.html', context)
 
-    return render(request, 'login-faculty.html')
+    return render(request, 'login_faculty.html')
 
 
 
@@ -108,3 +108,20 @@ def pick_groups(request, student_id):
         'group_list': assignment_list,
     }
     return render(request, 'pick_groups.html', context)
+
+def faculty_landing(request, faculty_id):
+    faculty = get_object_or_404(Faculty, pk=faculty_id)
+    # TODO: add course details as well
+    return render(request, 'faculty_landing.html', {'faculty' : faculty})
+
+def faculty_edit_groups(request):
+    return render(request, 'faculty_edit_groups.html')
+
+def faculty_create_course(request):
+    return render(request, 'faculty_create_course.html')
+
+def faculty_change_course(request):
+    return render(request, 'faculty_change_course.html')
+
+def faculty_create_assignment(request):
+    return render(request, 'faculty_create_assignment.html')
