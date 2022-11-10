@@ -7,25 +7,28 @@
   <title>
     Initial Sign Up
   </title>
-  <meta name = "viewport" content="width=device-width,intital-scale=1.0">
  
-  <!--{% load static %}-->
-  <link rel='stylesheet' href='../../static /css/styles.css'/>
+  {% load static %}
+  <link rel='stylesheet' href='../../static/css/styles.css'/>
 </head>
 
-<body>
-    <div class="logo-container">
-        <img src="../../static /media/images/logo.png" alt="logo">
+<body class="image-bg">
+  <div class="logo-container">
+    {% load static %}
+    <img src="../../static/media/images/logo.png" alt="logo">
+  </div>
+  <form action="./" method="post">
 
+    <div class="faculty-side-nav">
+      <button type="submit" class="button">
+        <a href="{% url 'storyer:login_faculty' %}">FACULTY</a>
+      </button>
     </div>
-    <form action="./initial.html" method="post">
 
-    <div>
-    <button type="submit" class="button"> FACILITY </button>
-    </div>
-    
-    <div>
-     <button type="submit" class="button"> STUDENT </button>
+    <div class="student-side-nav">
+      <button type="submit" class="button">
+        <a href="{% url 'storyer:login' %}">STUDENT</a>
+      </button>
     </div>
 
     </form>

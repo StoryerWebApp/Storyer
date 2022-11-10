@@ -5,30 +5,28 @@
   <meta http-equiv="X-UA-Compatible" content="IE = edge">
   <meta name="viewport" content="width=device-width initial-scale=1.0">
   <title>
-    Post Create- Facility 
+    Post Create- Faculty
   </title>
-  <meta name = "viewport" content="width=device-width,intital-scale=1.0">
  
-  <!--{% load static %}-->
-  <link rel='stylesheet' href='../../static /css/styles.css'/>
+  {% load static %}
+  <link rel='stylesheet' href='../../static/css/styles.css'/>
 </head>
 
 <body>
-  <div class="sign-up-container">
-
-  <div class="sign-up-title">
+<div class="post-container">
+  <div class="post-title">
     <h2>You have successfully created the course!</h2>
   </div>
-
-    <h3> Course Code </h3>
     <div> 
-
+      <h3> Course Code </h3>
       <!-- here is where the course code should be held for the facility to copy-->
     </div>
 
-  <button type="submit" class="post-buttons"> Go Back</button>
-
+    <div class="post-nav">
+      <button type="submit" class="button">
+        <a href="{% url 'storyer:faculty_landing' %}">CONTINUE</a>
+      </button>
+    </div>
   
-  </div>
-
+</div>
 </body>

@@ -5,52 +5,32 @@
   <meta http-equiv="X-UA-Compatible" content="IE = edge">
   <meta name="viewport" content="width=device-width initial-scale=1.0">
   <title>
-    Student Info- Facility  
+    Assignment creation
   </title>
-  <meta name = "viewport" content="width=device-width,intital-scale=1.0">
  
-  <!--{% load static %}-->
-  <link rel='stylesheet' href='../../static /css/pagestyles.css'/>
+  {% load static %}
+  <link rel='stylesheet' href='../../static/css/styles.css'/>
 </head>
 
-<body>
 
-
-  <div class="pages-banner">
-    <div class="nav-container">
-        <img src="../../static /media/images/logo.png" alt="logo">
-
-     <h1> Student Information</h1>
-
-    </div>
-    
-
-    <div  class="student-land">
-      
-    
-      
-      <div> 
-      <img src="../../static /media/images/group.png" alt="group">
-      </div>
-
-      <div  class="initial-sign-up-form">
-        <div>   
-          <input type="text" class="member-names">
-          <!-- this is the form where the student names will go they should all be one under the other and im assuming python will know how many to generate -->  
-        </div>
-    
-    </div>
-
-      <div class="groups-buttons">
-        <button type="submit" class="groups-button"> Ranking </button>
-       
-        <button type="submit" class="groups-button"> Assignments  </button>
-       </div>
- 
-<div class="description">
-  <!-- team description should go here-->
-</div>
-
-
+<body class="solid-bg">
+  <div class="header-bar">
+    <img class="storyer-logo" src="../../static/media/images/logo.png" alt="Storyer logo" />
   </div>
+  <div class="home-button">
+    <img class="icon-home" src="../../static/media/images/home.png" alt="home icon" />
+  </div>
+  <div class="page-text-dark">
+    <h1>{% student_name %}'s Info</h1>
+  </div>
+
+  <div class="group-name">
+    <h2>{% group_name %}</h2>
+  </div>
+  <div class="group-list-student-priority">
+    <h3>Student's past preferences:</h3>
+    <!-- input info on ranked priority choice here, likely use <table>? -->
+  </div>
+
 </body>
+</html>

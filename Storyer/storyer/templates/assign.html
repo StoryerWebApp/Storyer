@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE = edge">
+  <meta name="viewport" content="width=device-width initial-scale=1.0">
+  <title>
+    Assignment creation
+  </title>
+ 
+  {% load static %}
+  <link rel='stylesheet' href='../../static/css/styles.css'/>
+</head>
+
+
+<body class="solid-bg">
+  <div class="header-bar">
+    <img class="storyer-logo" src="../../static/media/images/logo.png" alt="Storyer logo" />
+  </div>
+  <div class="home-button">
+    <img class="icon-home" src="../../static/media/images/home.png" alt="home icon" />
+  </div>
+  <div class="page-text-dark">
+    <h1>Assignment Creation</h1>
+  </div>
+
+  <form action="" method="POST">{% csrf_token %}
+    <div class="assignment-creation-form">
+      <div class="page-text-dark">
+        <div>
+          <label for="inpName" class="assignment-name-create"> Name </label>
+          <input type="text" class="assignment-name-input" name="assignment_name" required>
+        </div>
+        <div>
+          <label for="inpDescrip" class="assignment-descrip-create"> Description </label>
+          <input type="text" class="assignment-descrip-input" size="20" name="assignment_description" required>
+        </div>
+
+        <div>
+          <button type="submit" class="assigment-create-button"> CREATE </button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="faculty-side-nav">
+    <button type="submit" class="button">
+      <a href="{% url 'storyer:faculty_landing' %}">GO BACK</a>
+    </button>
+  </div>
+  
+</body>
+</html>
