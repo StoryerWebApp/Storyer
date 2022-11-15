@@ -9,36 +9,56 @@
   </title>
  
   {% load static %}
-  <link rel='stylesheet' href='../../static/css/styles.css'/>
-  <link rel='stylesheet' href='../../static/css/pagestyles.css'/>
+  <link rel='stylesheet' href="{% static 'css/styles.css' %}"/>
+  <link rel='stylesheet' href="{% static 'css/pagestyles.css' %}"/>
 </head>
 
 <body class="solid-bg">
   <div class="header-bar">
-    <img class="storyer-logo" src="../../static/media/images/logo.png" alt="Storyer logo" />
-  </div>
-  <div class="home-button">
-    <img class="icon-home" src="../../static/media/images/home.png" alt="home icon" />
+    <img class="storyer-logo" src="{% static 'media/images/logo.png' %}" alt="Storyer logo" />
   </div>
   <div class="page-text-dark">
     <!-- TODO: add jinja2 variables for python -->
     <h1>Welcome Back, {{ faculty }}</h1>
-    <h2>Looking at Course </h2>
-    <h3>Code: </h3>
+    {% if course %}
+      <h2>Looking at Course {{ course }}</h2>
+      <h3>Code: {{ course.code }}</h3>
+    {% endif %}
   </div>
 
   <div class="faculty-buttons">
     <table>
       <tr>
         <td>
+          <button type="submit" class="button" name="create-course">
+            {% if course %}
+            <a href="{% url 'storyer:faculty_create_course' faculty.id course.id %}">Create New Course</a>
+            {% else %}
+            <a href="{% url 'storyer:faculty_create_course' faculty.id %}">Create New Course</a>
+            {% endif %}
+          </button>
+          <!-- GOTO: faculty_create_course.html -->
+        </td>
+        {% if course %}
+        <td>
+          <button type="submit" class="button" name="change-course">
+            <a href="{% url 'storyer:faculty_change_course' faculty.id course.id %}">View My Courses</a>
+          </button>
+        </td>
+        <!-- GOTO: faculty_change_course.html -->
+        {% endif %}
+      </tr>
+      {% if course %}
+      <tr>
+        <td>
           <button type="submit" class="button" name="submitted-assignments">
-            <a href="">Submitted Assignments</a>
-            <!-- TODO: GOTO: fsubmit.html -->
+            <a href="{% url 'storyer:faculty_check_assignments' faculty.id course.id  %}">Submitted Assignments</a>
+            <!-- GOTO: faculty_check_assignments.html -->
           </button>
         </td>
         <td>
           <button type="submit" class="button" name="create-assignments">
-            <a href="{% url 'storyer:faculty_create_assignment' %}">Create an Assignment</a>
+            <a href="{% url 'storyer:faculty_create_assignment' faculty.id course.id %}">Create an Assignment</a>
             <!-- GOTO: faculty_create_assignment.html -->
           </button>
         </td>
@@ -46,30 +66,18 @@
       <tr>
         <td>
           <button type="submit" class="button" name="student-information">
-            <a href="">Student Information</a>
+            <a href="{% url 'storyer:faculty_student_info' faculty.id course.id %}">Student Information</a>
           </button>
-          <!-- TODO: GOTO: studentinfo.html -->
+          <!-- GOTO: faculty_student_info.html -->
         </td>
         <td>
           <button type="submit" class="button" name="group-information">
-            <a href="{% url 'storyer:faculty_edit_groups' %}">Group Information</a>
+            <a href="{% url 'storyer:faculty_edit_groups' faculty.id course.id %}">Group Information</a>
             <!-- GOTO: faculty_edit_groups.html -->
           </button>
         </td>
       </tr>
-      <tr>
-        <td>
-          <button type="submit" class="button" name="create-course">
-            <a href="{% url 'storyer:faculty_create_course' %}">Create New Course</a>
-          </button>
-          <!-- GOTO: faculty_create_course.html -->
-        </td>
-        <td>
-          <button type="submit" class="button" name="change-course">
-            <a href="{% url 'storyer:faculty_change_course' %}">View My Courses</a>
-          </button>
-        </td>
-        <!-- GOTO: faculty_change_course.html -->
-      </tr>
+      {% endif %}
     </table>
 </body>
+</html>

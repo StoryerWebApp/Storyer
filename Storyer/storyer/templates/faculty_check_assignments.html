@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE = edge">
   <meta name="viewport" content="width=device-width initial-scale=1.0">
   <title>
-    Group Edit - Faculty 
+    Submission Links - Facility 
   </title>
  
   {% load static %}
@@ -18,9 +18,23 @@
     <img class="storyer-logo" src="{% static 'media/images/logo.png' %}" alt="Storyer logo" />
   </div>
 
+  <div class="group-list-container">
+    <!-- display each group and a list of submissions -->
+    <!-- FOREACH group in course -->
+      <!-- group name -->
+      <div class="group-container">
+        <!-- SCROLLBOX -->
+          <!-- FOREACh assignment in group -->
+          <div class="assignment-container">
+            <!-- LIST OF LINKS if submitted -->
+          </div>
+      </div>
+  </div>
+
   <div class="faculty-side-nav">
     <button type="submit" class="button">
       <a href="{% url 'storyer:faculty_landing' faculty.id course.id %}">GO BACK</a>
     </button>
   </div>
+  
 </body>

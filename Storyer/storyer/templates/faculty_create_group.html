@@ -5,36 +5,32 @@
   <meta http-equiv="X-UA-Compatible" content="IE = edge">
   <meta name="viewport" content="width=device-width initial-scale=1.0">
   <title>
-    Assignment creation - Faculty
+    Create Groups - Faculty
   </title>
  
   {% load static %}
+  <link rel='stylesheet' href="{% static 'css/pagestyles.css' %}"/>
   <link rel='stylesheet' href="{% static 'css/styles.css' %}"/>
 </head>
-
 
 <body class="solid-bg">
   <div class="header-bar">
     <img class="storyer-logo" src="{% static 'media/images/logo.png' %}" alt="Storyer logo" />
   </div>
   <div class="page-text-dark">
-    <h1>Assignment Creation</h1>
+    <h1>Group Creation</h1>
   </div>
 
   <form action="" method="POST">{% csrf_token %}
-    <div class="assignment-creation-form">
+    <div class="group-creation-form">
       <div class="page-text-dark">
         <div>
-          <label for="inpName" class="assignment-name-create"> Name </label>
-          <input type="text" class="assignment-name-input" name="assignment_name" required>
+          <label for="inpName" class="group-name-create"> Name </label>
+          <input type="text" class="group-name-input" name="group_name" required>
         </div>
         <div>
-          <label for="inpDescrip" class="assignment-descrip-create"> Description </label>
-          <input type="text" class="assignment-descrip-input" size="20" name="assignment_description" required>
-        </div>
-
-        <div>
-          <!-- FOREACh group in course, create dropdown box entry to choose which group gets this assignment -->
+          <label for="inpDescrip" class="group-descrip-create"> Description </label>
+          <input type="text" class="group-descrip-input" size="20" name="group_description" required>
         </div>
 
         <div>

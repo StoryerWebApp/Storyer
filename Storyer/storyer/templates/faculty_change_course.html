@@ -9,21 +9,46 @@
   </title>
  
   {% load static %}
-  <link rel='stylesheet' href='../../static/css/styles.css'/>
-  <link rel='stylesheet' href='../../static/css/pagestyles.css'/>
+  <link rel='stylesheet' href="{% static 'css/styles.css' %}"/>
+  <link rel='stylesheet' href="{% static 'css/pagestyles.css' %}"/>
 </head>
 
 <body class="solid-bg">
   <div class="header-bar">
-    <img class="storyer-logo" src="../../static/media/images/logo.png" alt="Storyer logo" />
+    <img class="storyer-logo" src="{% static 'media/images/logo.png' %}" alt="Storyer logo" />
   </div>
-  <div class="home-button">
-    <img class="icon-home" src="../../static/media/images/home.png" alt="home icon" />
+  <div class="page-text-dark">
+    <h1>Your Courses</h1>
   </div>
+
+  <!-- show current course info -->
+  <div class="course-info">
+    <!-- course name & code -->
+    <!-- FOREACH group in course -->
+      <div class="group-info">
+        <!-- group name, group size -->
+      </div>
+  </div>
+
+  <form>
+    <!-- dropdown with list of faculty's courses -->
+    <input list="courses">
+    <datalist id="courses">
+      {% for faculty_course in faculty.course_set.all() %}
+        <option value={{ faculty_course }}></option>
+      {% endfor %}
+    </datalist>
+    <!-- submit to set new current course -->
+  </form>
 
   <div class="faculty-side-nav">
     <button type="submit" class="button">
-      <a href="{% url 'storyer:faculty_landing' %}">GO BACK</a>
+      <a href="{% url 'storyer:faculty_create_course' faculty.id course.id %}">Create a New Course</a>
+    </button>
+  </div>
+  <div class="faculty-side-nav">
+    <button type="submit" class="button">
+      <a href="{% url 'storyer:faculty_landing' faculty.id course.id %}">GO BACK</a>
     </button>
   </div>
 </body>

@@ -5,7 +5,7 @@ from django.http import HttpResponse
 
 from storyer.models import Student, Assignment, Faculty, Course, Group
 from django.contrib.auth.models import User
-from .forms import LoginForm, SignupForm
+from .forms import LoginForm, SignupForm, CourseCreateForm
 
 
 def index(request):
@@ -13,18 +13,25 @@ def index(request):
 
 
 def signup(request):
+    # if a user submit a form from the webpage
     if request.method == "POST":
         context = {}
+        # get the data and check if its empty before trying to put it into a form model
         post_data = request.POST or None
         if post_data is not None:
             signup_form = SignupForm(post_data)
+            # if the data was parsed correctly and could be put into a form object without issue
             if signup_form.is_valid():
                 signup_form = signup_form.cleaned_data
+                # as long as this email from the form doesnt exist for another student
                 if not Student.objects.filter(email=signup_form['email']).exists():
+                    # put the first and last name together
                     name = (signup_form['first_name'].replace(" ", "").title(
                     ))+" "+signup_form['last_name'].replace(" ", "").title()
+                    # put the data into a new Student in the models
                     new_student = Student(
                         name=name, email=signup_form['email'], password=signup_form['password'])
+                    # save the new Student and then display the view for student_detail
                     new_student.save()
                     return student_detail(request, new_student.id)
                 else:
@@ -48,7 +55,7 @@ def signup_faculty(request):
                     new_faculty = Faculty(
                         name=name, email=signup_form['email'], password=signup_form['password'])
                     new_faculty.save()
-                    return faculty_landing(request, new_faculty.id)
+                    redirect('storyer:faculty_landing', faculty_id=new_faculty.id)
                 else:
                     context.update({"exists": True})
         context.update({'error_message': True})
@@ -87,7 +94,12 @@ def login_faculty(request):
                 faculty = Faculty.objects.filter(
                     email=login_form['email'], password=login_form['password']).first()
                 if faculty is not None:
-                    return faculty_landing(request, faculty.id)
+                    # TODO: display a default course for the faculty
+                    course = Course.objects.filter(creator=faculty).first()
+                    if course is not None:
+                        return redirect('storyer:faculty_landing', faculty_id=faculty.id, course_id=course.id)
+                    return redirect('storyer:faculty_landing', faculty_id=faculty.id)
+        
         context = {'error_message': True}
         return render(request, 'login_faculty.html', context)
 
@@ -109,19 +121,71 @@ def pick_groups(request, student_id):
     }
     return render(request, 'pick_groups.html', context)
 
-def faculty_landing(request, faculty_id):
+
+def faculty_landing(request, faculty_id, course_id=None):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
-    # TODO: add course details as well
-    return render(request, 'faculty_landing.html', {'faculty' : faculty})
+    course = None
+    # add course details as well if one is given
+    if course_id is not None:
+        course = get_object_or_404(Course, pk=course_id)
+    return render(request, 'faculty_landing.html', {'faculty':faculty, 'course':course})
 
-def faculty_edit_groups(request):
-    return render(request, 'faculty_edit_groups.html')
+def faculty_change_course(request, faculty_id, course_id):
+    faculty = get_object_or_404(Faculty, pk=faculty_id)
+    course = get_object_or_404(Course, pk=course_id)
+    return render(request, 'faculty_change_course.html', {'faculty':faculty, 'course':course})
 
-def faculty_create_course(request):
-    return render(request, 'faculty_create_course.html')
+def faculty_check_assignments(request, faculty_id, course_id):
+    faculty = get_object_or_404(Faculty, pk=faculty_id)
+    course = get_object_or_404(Course, pk=course_id)
+    return render(request, 'faculty_check_assignments.html', {'faculty':faculty, 'course':course})
 
-def faculty_change_course(request):
-    return render(request, 'faculty_change_course.html')
+def faculty_create_assignment(request, faculty_id, course_id):
+    faculty = get_object_or_404(Faculty, pk=faculty_id)
+    course = get_object_or_404(Course, pk=course_id)
+    return render(request, 'faculty_create_assignment.html', {'faculty':faculty, 'course':course})
 
-def faculty_create_assignment(request):
-    return render(request, 'faculty_create_assignment.html')
+def faculty_create_course(request, faculty_id, course_id=None):
+    faculty = get_object_or_404(Faculty, pk=faculty_id)
+    # retain course info if faculty already has one set to view
+    course = None
+    if course_id is not None:
+        course = get_object_or_404(Course, pk=course_id)
+    if request.method == "POST":
+        context = {}
+        post_data = request.POST or None
+        if post_data is not None:
+            course_create_form = CourseCreateForm(post_data)
+            if course_create_form.is_valid():
+                course_create_form = course_create_form.cleaned_data  
+                name = course_create_form['name']
+                code = course_create_form['code']
+                # check if a course this faculty member has created already exists with the same name, 
+                # as well as the code hasn't been used before at all
+                if not Course.objects.filter(code=code).exists() and not faculty.course_set.filter(name=name).exists():
+                    new_course = Course(name=name, code=code, creator=faculty)
+                    new_course.save()
+                    return redirect('storyer:faculty_landing', faculty_id=faculty.id, course_id=new_course.id)
+                else:
+                    context.update({"exists": True})
+            else:
+                print(course_create_form.errors.as_data())
+        context.update({'error_message': True})
+        return render(request, 'faculty_create_course.html', {'faculty' : faculty, 'course':course})
+
+    return render(request, 'faculty_create_course.html', {'faculty' : faculty, 'course':course})
+
+def faculty_create_group(request, faculty_id, course_id):
+    faculty = get_object_or_404(Faculty, pk=faculty_id)
+    course = get_object_or_404(Course, pk=course_id)
+    return render(request, 'faculty_create_group.html', {'faculty':faculty, 'course':course})
+
+def faculty_edit_groups(request, faculty_id, course_id):
+    faculty = get_object_or_404(Faculty, pk=faculty_id)
+    course = get_object_or_404(Course, pk=course_id)
+    return render(request, 'faculty_edit_groups.html', {'faculty':faculty, 'course':course})
+
+def faculty_student_info(request, faculty_id, course_id):
+    faculty = get_object_or_404(Faculty, pk=faculty_id)
+    course = get_object_or_404(Course, pk=course_id)
+    return render(request, 'faculty_student_info.html', {'faculty':faculty, 'course':course})
