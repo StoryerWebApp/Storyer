@@ -5,7 +5,7 @@ from django.http import HttpResponse
 
 from storyer.models import Student, Assignment, Faculty, Course, Group
 from django.contrib.auth.models import User
-from .forms import LoginForm, SignupForm, CourseCreateForm
+from .forms import LoginForm, SignupForm, CourseCreateForm, CourseChangeForm
 
 
 def index(request):
@@ -133,7 +133,23 @@ def faculty_landing(request, faculty_id, course_id=None):
 def faculty_change_course(request, faculty_id, course_id):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
     course = get_object_or_404(Course, pk=course_id)
-    return render(request, 'faculty_change_course.html', {'faculty':faculty, 'course':course})
+    # also give a list of all courses
+    course_list = faculty.course_set.all()
+
+    post_data = request.POST or None
+    if post_data is not None:
+        context = {}
+        course_change_form = CourseChangeForm(post_data)
+        if course_change_form.is_valid():
+            course_change_form = course_change_form.cleaned_data  
+            name = course_change_form['name']
+            new_course = Course.objects.get(name=name, creator=faculty)
+            return redirect('storyer:faculty_landing', faculty_id=faculty.id, course_id=new_course.id)
+        else:
+            print(course_change_form.errors.as_data())
+            context.update({'error_message': True})
+
+    return render(request, 'faculty_change_course.html', {'faculty':faculty, 'course':course, 'course_list':course_list})
 
 def faculty_check_assignments(request, faculty_id, course_id):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
