@@ -9,28 +9,30 @@
   </title>
  
   {% load static %}
-  <link rel='stylesheet' href='../../static/css/styles.css'/>
+  <link rel='stylesheet' href="{% static 'css/styles.css' %}"/>
 </head>
 
 
 <body class="solid-bg">
   <div class="header-bar">
-    <img class="storyer-logo" src="../../static/media/images/logo.png" alt="Storyer logo" />
-  </div>
-  <div class="home-button">
-    <img class="icon-home" src="../../static/media/images/home.png" alt="home icon" />
+    <img class="storyer-logo" src="{% static 'media/images/logo.png' %}" alt="Storyer logo" />
   </div>
   <div class="page-text-dark">
-    <h1>{% student_name %}'s Info</h1>
+    <h1>'s Info</h1>
   </div>
 
   <div class="group-name">
-    <h2>{% group_name %}</h2>
+    <h2></h2>
   </div>
   <div class="group-list-student-priority">
     <h3>Student's past preferences:</h3>
     <!-- input info on ranked priority choice here, likely use <table>? -->
   </div>
 
+  <div class="faculty-side-nav">
+    <button type="submit" class="button">
+      <a href="{% url 'storyer:faculty_landing' faculty.id course.id %}">GO BACK</a>
+    </button>
+  </div>
 </body>
 </html>
