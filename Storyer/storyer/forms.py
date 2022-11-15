@@ -16,3 +16,6 @@ class SignupForm(forms.Form):
 class CourseCreateForm(forms.Form):
     name = forms.CharField(label="Course Name", max_length=250)
     code = forms.CharField(label="Course Code", max_length=25)
+
+class CourseChangeForm(forms.Form):
+    name = forms.CharField(label="Courses", max_length=250)

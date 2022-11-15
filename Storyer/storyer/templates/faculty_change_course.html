@@ -30,15 +30,18 @@
       </div>
   </div>
 
-  <form>
+  <form action="" method="POST">{% csrf_token %}
     <!-- dropdown with list of faculty's courses -->
     <input list="courses">
     <datalist id="courses">
-      {% for faculty_course in faculty.course_set.all() %}
+      {% for faculty_course in course_list %}
         <option value={{ faculty_course }}></option>
       {% endfor %}
     </datalist>
     <!-- submit to set new current course -->
+    <div>
+      <button type="submit" class="course-change-button"> SUBMIT </button>
+    </div>
   </form>
 
   <div class="faculty-side-nav">
