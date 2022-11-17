@@ -19,39 +19,51 @@
   </div>
   <div class="page-text-dark">
     <h1>Your Courses</h1>
+    <h2>Currently viewing {{ course }}</h2>
+    <h3>Code: {{ course.code }}</h3>
   </div>
 
-  <!-- show current course info -->
-  <div class="course-info">
-    <!-- course name & code -->
-    <!-- FOREACH group in course -->
-      <div class="group-info">
-        <!-- group name, group size -->
+  <div class="course-change-form" style="float:left">
+    <!-- This should be a dropdown form for a faculty member to change their course
+    <form action="" method="POST">{% csrf_token %}
+      <select id="courses">
+        {% for faculty_course in course_list %}
+          <option value="{{ faculty_course.id }}">{{ faculty_course }}</option>
+        {% endfor %}
+      </select>
+      <div>
+        <button type="submit" class="course-change-button"> SUBMIT </button>
       </div>
-  </div>
+    </form>
+    -->
 
-  <form action="" method="POST">{% csrf_token %}
-    <!-- dropdown with list of faculty's courses -->
-    <input list="courses">
-    <datalist id="courses">
+    <!-- <select> and <datalist> are hard to use with django, so opted for quick
+         solution by using buttons instead
+    -->
+    <div class="course-change-buttons">
+      <table>
+        <tr> <th>Your Courses:</th> </tr>
       {% for faculty_course in course_list %}
-        <option value={{ faculty_course }}></option>
+        <tr> <td>
+          <button type="submit" class="button">
+            <a href="{% url 'storyer:faculty_change_course' faculty.id faculty_course.id %}">{{ faculty_course }}</a>
+          </button>
+        </td> </tr>
       {% endfor %}
-    </datalist>
-    <!-- submit to set new current course -->
-    <div>
-      <button type="submit" class="course-change-button"> SUBMIT </button>
+      </table>
     </div>
-  </form>
-
-  <div class="faculty-side-nav">
-    <button type="submit" class="button">
-      <a href="{% url 'storyer:faculty_create_course' faculty.id course.id %}">Create a New Course</a>
-    </button>
   </div>
-  <div class="faculty-side-nav">
-    <button type="submit" class="button">
-      <a href="{% url 'storyer:faculty_landing' faculty.id course.id %}">GO BACK</a>
-    </button>
+
+  <div class="course-change-nav" style="float:left">
+    <div class="faculty-side-nav">
+      <button type="submit" class="button">
+        <a href="{% url 'storyer:faculty_create_course' faculty.id course.id %}">Create a New Course</a>
+      </button>
+    </div>
+    <div class="faculty-side-nav">
+      <button type="submit" class="button">
+        <a href="{% url 'storyer:faculty_landing' faculty.id course.id %}">GO BACK</a>
+      </button>
+    </div>
   </div>
 </body>

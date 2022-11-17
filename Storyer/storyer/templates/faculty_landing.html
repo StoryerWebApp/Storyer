@@ -18,7 +18,6 @@
     <img class="storyer-logo" src="{% static 'media/images/logo.png' %}" alt="Storyer logo" />
   </div>
   <div class="page-text-dark">
-    <!-- TODO: add jinja2 variables for python -->
     <h1>Welcome Back, {{ faculty }}</h1>
     {% if course %}
       <h2>Looking at Course {{ course }}</h2>
@@ -51,24 +50,24 @@
       {% if course %}
       <tr>
         <td>
-          <button type="submit" class="button" name="submitted-assignments">
-            <a href="{% url 'storyer:faculty_check_assignments' faculty.id course.id  %}">Submitted Assignments</a>
-            <!-- GOTO: faculty_check_assignments.html -->
-          </button>
-        </td>
-        <td>
           <button type="submit" class="button" name="create-assignments">
             <a href="{% url 'storyer:faculty_create_assignment' faculty.id course.id %}">Create an Assignment</a>
             <!-- GOTO: faculty_create_assignment.html -->
           </button>
         </td>
+        <td>
+          <button type="submit" class="button" name="submitted-assignments">
+            <a href="{% url 'storyer:faculty_check_assignments' faculty.id course.id  %}">View Submitted Assignments</a>
+            <!-- GOTO: faculty_check_assignments.html -->
+          </button>
+        </td>
       </tr>
       <tr>
         <td>
-          <button type="submit" class="button" name="student-information">
-            <a href="{% url 'storyer:faculty_student_info' faculty.id course.id %}">Student Information</a>
+          <button type="submit" class="button" name="create-group">
+            <a href="{% url 'storyer:faculty_create_group' faculty.id course.id %}">Create a Group</a>
           </button>
-          <!-- GOTO: faculty_student_info.html -->
+          <!-- GOTO: faculty_create_group.html -->
         </td>
         <td>
           <button type="submit" class="button" name="group-information">

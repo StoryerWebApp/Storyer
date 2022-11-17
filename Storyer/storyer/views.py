@@ -5,7 +5,7 @@ from django.http import HttpResponse
 
 from storyer.models import Student, Assignment, Faculty, Course, Group
 from django.contrib.auth.models import User
-from .forms import LoginForm, SignupForm, CourseCreateForm, CourseChangeForm
+from .forms import LoginForm, SignupForm, CourseCreateForm, CourseChangeForm, GroupCreateForm
 
 
 def index(request):
@@ -55,7 +55,7 @@ def signup_faculty(request):
                     new_faculty = Faculty(
                         name=name, email=signup_form['email'], password=signup_form['password'])
                     new_faculty.save()
-                    redirect('storyer:faculty_landing', faculty_id=new_faculty.id)
+                    return redirect('storyer:faculty_landing', faculty_id=new_faculty.id)
                 else:
                     context.update({"exists": True})
         context.update({'error_message': True})
@@ -136,6 +136,8 @@ def faculty_change_course(request, faculty_id, course_id):
     # also give a list of all courses
     course_list = faculty.course_set.all()
 
+    """ 
+    # TODO: receive the submitted form option entry from a dropdown list
     post_data = request.POST or None
     if post_data is not None:
         context = {}
@@ -148,6 +150,7 @@ def faculty_change_course(request, faculty_id, course_id):
         else:
             print(course_change_form.errors.as_data())
             context.update({'error_message': True})
+    """
 
     return render(request, 'faculty_change_course.html', {'faculty':faculty, 'course':course, 'course_list':course_list})
 
@@ -194,7 +197,32 @@ def faculty_create_course(request, faculty_id, course_id=None):
 def faculty_create_group(request, faculty_id, course_id):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
     course = get_object_or_404(Course, pk=course_id)
-    return render(request, 'faculty_create_group.html', {'faculty':faculty, 'course':course})
+
+    if request.method == "POST":
+        context = {}
+        post_data = request.POST or None
+        group_create_form = GroupCreateForm(post_data)
+        if post_data is not None:
+            if group_create_form.is_valid():
+                group_create_form = group_create_form.cleaned_data  
+                name = group_create_form['name']
+                description = group_create_form['description']
+                # check if a course this faculty member has created already exists with the same name, 
+                # as well as the code hasn't been used before at all
+                if not course.group_set.filter(name=name).exists():
+                    new_group = Group(name=name, description=description, course=course)
+                    new_group.save()
+                    return redirect('storyer:faculty_landing', faculty_id=faculty.id, course_id=course.id)
+                else:
+                    context.update({"exists": True})
+            else:
+                print(group_create_form.errors.as_data())
+        context.update({'error_message': True})
+        return render(request, 'faculty_create_group.html', {'faculty' : faculty, 'course':course})
+    else:
+        group_create_form = GroupCreateForm()
+
+    return render(request, 'faculty_create_group.html', {'form':group_create_form, 'faculty':faculty, 'course':course})
 
 def faculty_edit_groups(request, faculty_id, course_id):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
