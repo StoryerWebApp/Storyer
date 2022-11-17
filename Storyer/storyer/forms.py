@@ -17,5 +17,16 @@ class CourseCreateForm(forms.Form):
     name = forms.CharField(label="Course Name", max_length=250)
     code = forms.CharField(label="Course Code", max_length=25)
 
-class CourseChangeForm(forms.Form):
-    name = forms.CharField(label="Courses", max_length=250)
+class GroupCreateForm(forms.Form):
+    name = forms.CharField(label="Group Name", max_length=250)
+    description = forms.CharField(label="Group Description", widget=forms.Textarea(attrs={"rows":10, "cols":40}))
+
+# TODO: needs to generate a dropdown of choices for a given faculty member's courses
+class CourseChangeForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = ('name',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].queryset = Course.objects.all()

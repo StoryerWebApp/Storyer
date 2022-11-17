@@ -23,19 +23,13 @@
 
   <form action="" method="POST">{% csrf_token %}
     <div class="group-creation-form">
-      <div class="page-text-dark">
+      <!-- form is GroupCreateForm from forms.py -->
+      {{ form|linebreaks }}
+      
         <div>
-          <label for="inpName" class="group-name-create"> Name </label>
-          <input type="text" class="group-name-input" name="group_name" required>
-        </div>
-        <div>
-          <label for="inpDescrip" class="group-descrip-create"> Description </label>
-          <input type="text" class="group-descrip-input" size="20" name="group_description" required>
+          <button type="submit" class="group-create-button"> CREATE </button>
         </div>
 
-        <div>
-          <button type="submit" class="assigment-create-button"> CREATE </button>
-        </div>
       </div>
     </div>
   </form>
