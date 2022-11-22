@@ -12,6 +12,7 @@ class Student(models.Model):
     password = models.CharField(max_length=50, blank=False, null=False)
     group = models.ManyToManyField("Group", blank=True, related_name="assigned_group")
     preferences = models.ManyToManyField("Group", through="Preference", related_name="group_preferences")
+    courses = models.ManyToManyField("Course", blank=True, related_name="enrolled_courses")
 
     def __str__(self):
         return self.name

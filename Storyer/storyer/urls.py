@@ -30,6 +30,6 @@ urlpatterns = [
          views.faculty_create_group, name='faculty_create_group'),
     path('faculty_edit_groups/<int:faculty_id>/<int:course_id>/', 
          views.faculty_edit_groups, name='faculty_edit_groups'),
-    path('faculty_student_info/<int:faculty_id>/<int:course_id>/', 
+    path('faculty_student_info/<int:faculty_id>/<int:course_id>/<int:student_id>/', 
          views.faculty_student_info, name='faculty_student_info'),
 ]
