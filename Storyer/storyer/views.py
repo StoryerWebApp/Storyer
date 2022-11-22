@@ -3,9 +3,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 # Create your views here.
 from django.http import HttpResponse
 
-from storyer.models import Student, Assignment, Faculty, Course, Group
+from storyer.models import Student, Assignment, Faculty, Course, Group, Preference
 from django.contrib.auth.models import User
-from .forms import LoginForm, SignupForm, CourseCreateForm, CourseChangeForm, GroupCreateForm
+from .forms import LoginForm, SignupForm, CourseCreateForm, CourseChangeForm, GroupCreateForm, AssignmentCreateForm
 
 
 def index(request):
@@ -106,7 +106,6 @@ def login_faculty(request):
     return render(request, 'login_faculty.html')
 
 
-
 def student_detail(request, student_id):
     student = get_object_or_404(Student, pk=student_id)
     return render(request, 'student_detail.html', {'student': student})
@@ -121,7 +120,7 @@ def pick_groups(request, student_id):
     }
     return render(request, 'pick_groups.html', context)
 
-
+# Initial dashboard for faculty to navigate and look at all of their courses
 def faculty_landing(request, faculty_id, course_id=None):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
     course = None
@@ -130,40 +129,65 @@ def faculty_landing(request, faculty_id, course_id=None):
         course = get_object_or_404(Course, pk=course_id)
     return render(request, 'faculty_landing.html', {'faculty':faculty, 'course':course})
 
+# Let faculty accounts change which course they would like to view
 def faculty_change_course(request, faculty_id, course_id):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
     course = get_object_or_404(Course, pk=course_id)
-    # also give a list of all courses
-    course_list = faculty.course_set.all()
 
-    """ 
-    # TODO: receive the submitted form option entry from a dropdown list
+    # receive the submitted form option entry from a dropdown list
     post_data = request.POST or None
     if post_data is not None:
         context = {}
-        course_change_form = CourseChangeForm(post_data)
+        course_change_form = CourseChangeForm(faculty=faculty, data=post_data)
         if course_change_form.is_valid():
-            course_change_form = course_change_form.cleaned_data  
-            name = course_change_form['name']
-            new_course = Course.objects.get(name=name, creator=faculty)
-            return redirect('storyer:faculty_landing', faculty_id=faculty.id, course_id=new_course.id)
+            course_change_form = course_change_form.cleaned_data
+            # get data from the dict that the form returned
+            new_id = course_change_form.get('course', "0")
+            return redirect('storyer:faculty_landing', faculty_id=faculty.id, course_id=new_id)
         else:
             print(course_change_form.errors.as_data())
             context.update({'error_message': True})
-    """
+    else:
+        course_change_form = CourseChangeForm(faculty=faculty)
 
-    return render(request, 'faculty_change_course.html', {'faculty':faculty, 'course':course, 'course_list':course_list})
+    return render(request, 'faculty_change_course.html', {'faculty':faculty, 'course':course, 'form':course_change_form})
 
+# Displays all the assignments for every group
 def faculty_check_assignments(request, faculty_id, course_id):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
     course = get_object_or_404(Course, pk=course_id)
-    return render(request, 'faculty_check_assignments.html', {'faculty':faculty, 'course':course})
+    groups = course.group_set.all()
 
+    return render(request, 'faculty_check_assignments.html', {'faculty':faculty, 'course':course, 'groups':groups})
+
+# Allow faculty account to create a single assignment for one group
 def faculty_create_assignment(request, faculty_id, course_id):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
     course = get_object_or_404(Course, pk=course_id)
-    return render(request, 'faculty_create_assignment.html', {'faculty':faculty, 'course':course})
 
+    # receive the submitted form to create assignment
+    post_data = request.POST or None
+    if post_data is not None:
+        context = {}
+        assignment_create_form = AssignmentCreateForm(course=course, data=post_data)
+        if assignment_create_form.is_valid():
+            assignment_create_form = assignment_create_form.cleaned_data
+            # get data from the dict that the form returned
+            title = assignment_create_form.get('title', "0")
+            description = assignment_create_form.get('description', "0")
+            group_id = assignment_create_form.get('group', "0")
+            new_assignment = Assignment(title=title, description=description, group=Group.objects.get(id=group_id))
+            new_assignment.save()
+            return redirect('storyer:faculty_check_assignments', faculty_id=faculty.id, course_id=course.id)
+        else:
+            print(assignment_create_form.errors.as_data())
+            context.update({'error_message': True})
+    else:
+        assignment_create_form = AssignmentCreateForm(course=course)
+
+    return render(request, 'faculty_create_assignment.html', {'faculty':faculty, 'course':course, 'form':assignment_create_form})
+
+# Lets a faaculty account create a new course
 def faculty_create_course(request, faculty_id, course_id=None):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
     # retain course info if faculty already has one set to view
@@ -194,6 +218,7 @@ def faculty_create_course(request, faculty_id, course_id=None):
 
     return render(request, 'faculty_create_course.html', {'faculty' : faculty, 'course':course})
 
+# Lets a faculty account create a group for the certain course
 def faculty_create_group(request, faculty_id, course_id):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
     course = get_object_or_404(Course, pk=course_id)
@@ -224,12 +249,22 @@ def faculty_create_group(request, faculty_id, course_id):
 
     return render(request, 'faculty_create_group.html', {'form':group_create_form, 'faculty':faculty, 'course':course})
 
+# Both displays groups as well as allows for the reassignment of groups
 def faculty_edit_groups(request, faculty_id, course_id):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
     course = get_object_or_404(Course, pk=course_id)
-    return render(request, 'faculty_edit_groups.html', {'faculty':faculty, 'course':course})
+    groups = course.group_set.all()
 
-def faculty_student_info(request, faculty_id, course_id):
+    return render(request, 'faculty_edit_groups.html', {'faculty':faculty, 'course':course, 'groups':groups})
+
+# Displays the information of a specific student as it pertains to the course
+def faculty_student_info(request, faculty_id, course_id, student_id):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
     course = get_object_or_404(Course, pk=course_id)
-    return render(request, 'faculty_student_info.html', {'faculty':faculty, 'course':course})
+    student = get_object_or_404(Student, pk=student_id)
+
+    # get the student's info specific to the course here as well
+    group = student.group.get(course=course)
+    preferences = Preference.objects.filter(student_id=student.id, group_preference__course=course).order_by('priority')
+
+    return render(request, 'faculty_student_info.html', {'faculty':faculty, 'course':course, 'student':student, 'group':group, 'preferences':preferences})

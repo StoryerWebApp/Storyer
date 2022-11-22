@@ -23,25 +23,12 @@
 
   <div class="assignment-creation-form">
     <form action="" method="POST">{% csrf_token %}
-        <div class="page-text-dark">
-          <div>
-            <label for="inpName" class="assignment-name-create"> Name </label><br>
-            <input type="text" class="assignment-name-input" name="assignment_name" required><br>
-          </div>
-          <div>
-            <!-- TODO: replace this with textarea for resizeable textbox, allowing for making it easier to read created description-->
-            <label for="inpDescrip" class="assignment-descrip-create"> Description </label><br>
-            <input type="text" class="assignment-descrip-input" height=20 name="assignment_description" required><br>
-          </div>
-          
-          <div>
-            <!-- FOREACh group in course, create dropdown box entry to choose which group gets this assignment -->
-          </div>
+        
+      {{ form|linebreaks }}
 
-          <div>
-            <button type="submit" class="assigment-create-button"> CREATE </button>
-          </div>
-        </div>
+      <div>
+        <button type="submit" class="assigment-create-button"> CREATE </button>
+      </div>
     </form>
   </div>
 

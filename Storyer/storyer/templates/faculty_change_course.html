@@ -24,34 +24,15 @@
   </div>
 
   <div class="course-change-form" style="float:left">
-    <!-- This should be a dropdown form for a faculty member to change their course
+    <!-- This should be a dropdown form for a faculty member to change their course -->
     <form action="" method="POST">{% csrf_token %}
-      <select id="courses">
-        {% for faculty_course in course_list %}
-          <option value="{{ faculty_course.id }}">{{ faculty_course }}</option>
-        {% endfor %}
-      </select>
+      
+      {{ form.as_table }}
+
       <div>
         <button type="submit" class="course-change-button"> SUBMIT </button>
       </div>
     </form>
-    -->
-
-    <!-- <select> and <datalist> are hard to use with django, so opted for quick
-         solution by using buttons instead
-    -->
-    <div class="course-change-buttons">
-      <table>
-        <tr> <th>Your Courses:</th> </tr>
-      {% for faculty_course in course_list %}
-        <tr> <td>
-          <button type="submit" class="button">
-            <a href="{% url 'storyer:faculty_change_course' faculty.id faculty_course.id %}">{{ faculty_course }}</a>
-          </button>
-        </td> </tr>
-      {% endfor %}
-      </table>
-    </div>
   </div>
 
   <div class="course-change-nav" style="float:left">

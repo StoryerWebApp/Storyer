@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student, Assignment, Course
+from .models import Student, Assignment, Course, Group
 
 
 class LoginForm(forms.Form):
@@ -22,11 +22,26 @@ class GroupCreateForm(forms.Form):
     description = forms.CharField(label="Group Description", widget=forms.Textarea(attrs={"rows":10, "cols":40}))
 
 # TODO: needs to generate a dropdown of choices for a given faculty member's courses
-class CourseChangeForm(forms.ModelForm):
+class CourseChangeForm(forms.Form):
     class Meta:
         model = Course
-        fields = ('name',)
+        fields = ['course',]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, faculty, *args, **kwargs):
+        # call standard __init__
         super().__init__(*args, **kwargs)
-        self.fields['name'].queryset = Course.objects.all()
+        #extend __init__
+        self.fields['course'] = forms.ChoiceField(choices=Course.objects.filter(creator=faculty).values_list('id', 'name'))
+
+class AssignmentCreateForm(forms.Form):
+    class Meta:
+        model = Assignment
+        fields = ['title', 'description', 'group',]
+
+    def __init__(self, course, *args, **kwargs):
+        # call standard __init__
+        super().__init__(*args, **kwargs)
+        #extend __init__
+        self.fields['title']  = forms.CharField(label="Assignment Title", max_length=250)
+        self.fields['description'] = forms.CharField(label="Assignment Description", widget=forms.Textarea(attrs={"rows":10, "cols":40}))
+        self.fields['group'] = forms.ChoiceField(choices=Group.objects.filter(course=course).values_list('id', 'name'))

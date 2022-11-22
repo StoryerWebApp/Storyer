@@ -18,20 +18,26 @@
     <img class="storyer-logo" src="{% static 'media/images/logo.png' %}" alt="Storyer logo" />
   </div>
   <div class="page-text-dark">
-    <h1>'s Info</h1>
+    <h1>{{ student.name }}'s Info</h1>
   </div>
 
+  <div class="student-email">
+    <h2>Email: {{ student.email }}</h2>
+  </div>
   <div class="group-name">
-    <h2></h2>
+    <h2>Group: {{ group.name }}</h2>
   </div>
   <div class="group-list-student-priority">
     <h3>Student's past preferences:</h3>
-    <!-- input info on ranked priority choice here, likely use <table>? -->
+    <!-- input info on ranked priority choice here -->
+    {% for preference in preferences %}
+      <p>{{ preference.group_preference.name }} : Priority {{ preference.priority }}</p>
+    {% endfor %}
   </div>
 
   <div class="faculty-side-nav">
     <button type="submit" class="button">
-      <a href="{% url 'storyer:faculty_landing' faculty.id course.id %}">GO BACK</a>
+      <a href="{% url 'storyer:faculty_edit_groups' faculty.id course.id %}">GO BACK</a>
     </button>
   </div>
 </body>
