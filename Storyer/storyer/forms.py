@@ -21,7 +21,6 @@ class GroupCreateForm(forms.Form):
     name = forms.CharField(label="Group Name", max_length=250)
     description = forms.CharField(label="Group Description", widget=forms.Textarea(attrs={"rows":10, "cols":40}))
 
-# TODO: needs to generate a dropdown of choices for a given faculty member's courses
 class CourseChangeForm(forms.Form):
     class Meta:
         model = Course
@@ -32,6 +31,17 @@ class CourseChangeForm(forms.Form):
         super().__init__(*args, **kwargs)
         #extend __init__
         self.fields['course'] = forms.ChoiceField(choices=Course.objects.filter(creator=faculty).values_list('id', 'name'))
+
+class StudentGroupChangeForm(forms.Form):
+    class Meta:
+        model = Course
+        fields = ['group',]
+
+    def __init__(self, course, *args, **kwargs):
+        # call standard __init__
+        super().__init__(*args, **kwargs)
+        #extend __init__
+        self.fields['group'] = forms.ChoiceField(label="Change Student's Group:", choices=course.group_set.values_list('id', 'name'))
 
 class AssignmentCreateForm(forms.Form):
     class Meta:

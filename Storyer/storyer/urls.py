@@ -32,4 +32,6 @@ urlpatterns = [
          views.faculty_edit_groups, name='faculty_edit_groups'),
     path('faculty_student_info/<int:faculty_id>/<int:course_id>/<int:student_id>/', 
          views.faculty_student_info, name='faculty_student_info'),
+     path('faculty_groupsort/<int:faculty_id>/<int:course_id>/', 
+         views.faculty_groupsort, name='faculty_groupsort'),
 ]

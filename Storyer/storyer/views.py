@@ -5,7 +5,8 @@ from django.http import HttpResponse
 
 from storyer.models import Student, Assignment, Faculty, Course, Group, Preference
 from django.contrib.auth.models import User
-from .forms import LoginForm, SignupForm, CourseCreateForm, CourseChangeForm, GroupCreateForm, AssignmentCreateForm
+from .forms import LoginForm, SignupForm, CourseCreateForm, CourseChangeForm, GroupCreateForm, AssignmentCreateForm, StudentGroupChangeForm
+from django.core.management import call_command
 
 
 def index(request):
@@ -254,17 +255,53 @@ def faculty_edit_groups(request, faculty_id, course_id):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
     course = get_object_or_404(Course, pk=course_id)
     groups = course.group_set.all()
+    # get students that don't have an assigned group
+    unassigned_students = course.enrolled_courses.filter(group__isnull=True)
 
-    return render(request, 'faculty_edit_groups.html', {'faculty':faculty, 'course':course, 'groups':groups})
+    return render(request, 'faculty_edit_groups.html', {'faculty':faculty, 'course':course, 'groups':groups, 'unassigned_students':unassigned_students})
 
 # Displays the information of a specific student as it pertains to the course
 def faculty_student_info(request, faculty_id, course_id, student_id):
     faculty = get_object_or_404(Faculty, pk=faculty_id)
     course = get_object_or_404(Course, pk=course_id)
     student = get_object_or_404(Student, pk=student_id)
+    group = None
 
     # get the student's info specific to the course here as well
-    group = student.group.get(course=course)
+    if student.group.filter(course=course).exists():
+        group = student.group.get(course=course)
     preferences = Preference.objects.filter(student_id=student.id, group_preference__course=course).order_by('priority')
 
-    return render(request, 'faculty_student_info.html', {'faculty':faculty, 'course':course, 'student':student, 'group':group, 'preferences':preferences})
+    # receive the submitted form option entry from a dropdown list
+    post_data = request.POST or None
+    if post_data is not None:
+        context = {}
+        student_group_change_form = StudentGroupChangeForm(course=course, data=post_data)
+        if student_group_change_form.is_valid():
+            student_group_change_form = student_group_change_form.cleaned_data
+            # get data from the dict that the form returned
+            new_group_id = student_group_change_form.get('group', "0")
+            # remove student from current group in this course before adding them to new one
+            student.group.remove(group)
+            student.group.add(Group.objects.get(id=new_group_id))
+            student.save()
+            group = student.group.get(course=course)
+            # reset form
+            student_group_change_form = StudentGroupChangeForm(course=course)
+            return render(request, 'faculty_student_info.html', {'faculty':faculty, 'course':course, 'student':student, 'group':group, 'preferences':preferences, 'form':student_group_change_form})
+        else:
+            print(student_group_change_form.errors.as_data())
+            context.update({'error_message': True})
+    else:
+        student_group_change_form = StudentGroupChangeForm(course=course)
+
+    return render(request, 'faculty_student_info.html', {'faculty':faculty, 'course':course, 'student':student, 'group':group, 'preferences':preferences, 'form':student_group_change_form})
+
+# runs the groupsort command before returning to faculty_edit_groups
+def faculty_groupsort(request, faculty_id, course_id):
+
+    print("SORTING")
+    call_command('faculty_groupsort', course_id, "--debug")
+    print("DONE SORTING")
+
+    return redirect('storyer:faculty_edit_groups', faculty_id=faculty_id, course_id=course_id)
