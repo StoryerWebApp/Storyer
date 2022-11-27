@@ -299,9 +299,7 @@ def faculty_student_info(request, faculty_id, course_id, student_id):
 
 # runs the groupsort command before returning to faculty_edit_groups
 def faculty_groupsort(request, faculty_id, course_id):
-
-    print("SORTING")
-    call_command('faculty_groupsort', course_id, "--debug")
-    print("DONE SORTING")
+    # to see line prints during execution, add "--debug" to the function arguments
+    call_command('faculty_groupsort', course_id)
 
     return redirect('storyer:faculty_edit_groups', faculty_id=faculty_id, course_id=course_id)
